@@ -1,5 +1,7 @@
 #include <windows.h>
- 
+
+int g_secondsB = 0; // seconds for browser
+int g_secondsM = 0; // seconds for minecraft
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
@@ -7,6 +9,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     {
     case WM_CREATE:
         RegisterHotKey(hwnd, 1, MOD_CONTROL | MOD_ALT, 'Q');   // register hotkey to quit to be alt + q
+        SetTimer(hwnd, 1, 1000, nullptr);
+        return 0;
+
+    case WM_TIMER:
+        g_secondsM++;
         return 0;
  
     case WM_HOTKEY: // triggers when previously registered hot key presses
@@ -14,6 +21,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         return 0;
  
     case WM_DESTROY:
+        KillTimer(hwnd, 1);
         PostQuitMessage(0); // quit program
         return 0;
     }
