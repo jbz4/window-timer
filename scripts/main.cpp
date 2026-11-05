@@ -1,20 +1,65 @@
 #include <windows.h>
+#include <string>
 
 int g_secondsB = 0; // seconds for browser
 int g_secondsM = 0; // seconds for minecraft
+std::wstring currExe; // current foreground exe
+
+std::wstring getForegroundExe()
+{
+    HWND foreground = GetForegroundWindow();
+    if(!foreground) return L"";
+
+    DWORD pid = 0;
+    GetWindowThreadProcessId(foreground, &pid);
+    if(pid == 0) return L"";
+
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    if(!process) return L"";
+
+    wchar_t path[MAX_PATH];
+    DWORD len = MAX_PATH;
+    std::wstring exe;
+
+    if (QueryFullProcessImageNameW(process, 0, path, &len)) // get foreground exe path
+    {
+        exe.assign(path, len);
+ 
+        // index of last slash
+        size_t slash = exe.find_last_of(L'\\');
+
+        if (slash != std::wstring::npos) exe = exe.substr(slash + 1); // npos basically means null
+    }
+
+    CloseHandle(process);
+    return exe;
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg)
     {
     case WM_CREATE:
-        RegisterHotKey(hwnd, 1, MOD_CONTROL | MOD_ALT, 'Q');   // register hotkey to quit to be alt + q
+        RegisterHotKey(hwnd, 1, MOD_CONTROL | MOD_ALT, 'Q'); // register hotkey to quit to be alt + q
         SetTimer(hwnd, 1, 1000, nullptr);
         return 0;
 
     case WM_TIMER:
-        g_secondsM++;
+    {
+        currExe = getForegroundExe();
+        InvalidateRect(hwnd, nullptr, TRUE);
         return 0;
+    }
+    case WM_PAINT: // testing
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+        SetBkMode(hdc, TRANSPARENT);
+        SetTextColor(hdc, RGB(255, 255, 255));
+        TextOutW(hdc, 10, 10, currExe.c_str(), (int)currExe.size());
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
  
     case WM_HOTKEY: // triggers when previously registered hot key presses
         DestroyWindow(hwnd); // trigger WM_DESTROY event
@@ -28,7 +73,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     return DefWindowProcW(hwnd, msg, wp, lp); // other windows procedures I don't handle are handled with this
 }
  
-// entry point, win32 api's replacement for main
+// entry point, basically win32 api's replacement for int main()
 int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, PWSTR, int ) 
 {
     WNDCLASSW wc = {};
