@@ -1,8 +1,11 @@
 #include <windows.h>
 #include <string>
 
-int g_secondsB = 0; // seconds for browser
-int g_secondsM = 0; // seconds for minecraft
+#define MINECRAFT L"javaw.exe"
+#define BROWSER L"brave.exe"
+
+int seconds_B = 0; // seconds for browser
+int seconds_M = 0; // seconds for minecraft
 std::wstring currExe; // current foreground exe
 
 std::wstring getForegroundExe()
@@ -47,6 +50,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_TIMER:
     {
         currExe = getForegroundExe();
+        if(currExe == MINECRAFT) seconds_M++;
+        else if(currExe == BROWSER) seconds_B++;
         InvalidateRect(hwnd, nullptr, TRUE);
         return 0;
     }
@@ -54,9 +59,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
+
+        wchar_t text[64];
+
         SetBkMode(hdc, TRANSPARENT);
         SetTextColor(hdc, RGB(255, 255, 255));
         TextOutW(hdc, 10, 10, currExe.c_str(), (int)currExe.size());
+
+        wsprintfW(text, L"A: %d", seconds_B);
+        TextOutW(hdc, 10, 30, text, lstrlen(text));
+        // TextOutW(hdc, 10, 30, )
         EndPaint(hwnd, &ps);
         return 0;
     }
