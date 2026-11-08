@@ -1,12 +1,12 @@
 #include <windows.h>
 #include <string>
 
-#define MINECRAFT L"javaw.exe"
-#define BROWSER L"brave.exe"
-
 int seconds_B = 0; // seconds for browser
 int seconds_M = 0; // seconds for minecraft
 std::wstring currExe; // current foreground exe
+
+const std::wstring MINECRAFT = L"javaw.exe";
+const std::wstring BROWSER = L"brave.exe";
 
 std::wstring getForegroundExe()
 {
@@ -38,6 +38,18 @@ std::wstring getForegroundExe()
     return exe;
 }
 
+void DrawLine(HDC hdc, int y, const wchar_t* name, int secs, bool active)
+{
+    SetTextColor(hdc, active ? RGB(120, 255, 120) : RGB(255, 255, 255));
+ 
+    TextOutW(hdc, 10, y, name, lstrlenW(name));
+ 
+    wchar_t time[16];
+    wsprintfW(time, L"%02d:%02d:%02d", secs / 3600, (secs / 60) % 60, secs % 60);
+ 
+    TextOutW(hdc, 200, y, time, lstrlenW(time));
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg)
@@ -55,20 +67,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         InvalidateRect(hwnd, nullptr, TRUE);
         return 0;
     }
-    case WM_PAINT: // testing
+    case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        wchar_t text[64];
-
         SetBkMode(hdc, TRANSPARENT);
-        SetTextColor(hdc, RGB(255, 255, 255));
-        TextOutW(hdc, 10, 10, currExe.c_str(), (int)currExe.size());
+        
+        DrawLine(hdc, 10, MINECRAFT.c_str(), seconds_M, currExe == MINECRAFT);
+        DrawLine(hdc, 30, BROWSER.c_str(), seconds_B, currExe == BROWSER);
 
-        wsprintfW(text, L"A: %d", seconds_B);
-        TextOutW(hdc, 10, 30, text, lstrlen(text));
-        // TextOutW(hdc, 10, 30, )
         EndPaint(hwnd, &ps);
         return 0;
     }
