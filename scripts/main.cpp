@@ -44,8 +44,8 @@ void DrawLine(HDC hdc, int y, const wchar_t* name, int secs, bool active)
  
     TextOutW(hdc, 10, y, name, lstrlenW(name));
  
-    wchar_t time[16];
-    wsprintfW(time, L"%02d:%02d:%02d", secs / 3600, (secs / 60) % 60, secs % 60);
+    wchar_t time[16]; // buffer for the time text, I opted for this instead of wstring bc it is simpler and doesn't need extra import
+    wsprintfW(time, L"%02d:%02d:%02d", secs / 3600, (secs / 60) % 60, secs % 60); // converting seconds to hours:minutes:seconds like 00:00:00
  
     TextOutW(hdc, 200, y, time, lstrlenW(time));
 }
@@ -64,7 +64,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         currExe = getForegroundExe();
         if(currExe == MINECRAFT) seconds_M++;
         else if(currExe == BROWSER) seconds_B++;
-        InvalidateRect(hwnd, nullptr, TRUE);
+        InvalidateRect(hwnd, nullptr, TRUE); // triggers WM_PAINT event
         return 0;
     }
     case WM_PAINT:
@@ -74,8 +74,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
         SetBkMode(hdc, TRANSPARENT);
         
-        DrawLine(hdc, 10, MINECRAFT.c_str(), seconds_M, currExe == MINECRAFT);
-        DrawLine(hdc, 30, BROWSER.c_str(), seconds_B, currExe == BROWSER);
+        DrawLine(hdc, 10, L"Minecraft", seconds_M, currExe == MINECRAFT);
+        DrawLine(hdc, 30, L"Homework", seconds_B, currExe == BROWSER);
 
         EndPaint(hwnd, &ps);
         return 0;
