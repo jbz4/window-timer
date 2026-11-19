@@ -6,7 +6,9 @@ int seconds_M = 0; // seconds for minecraft
 std::wstring currExe; // current foreground exe
 
 const std::wstring MINECRAFT = L"javaw.exe";
-const std::wstring BROWSER = L"brave.exe";
+const std::wstring BRAVE = L"brave.exe";
+const std::wstring FIREFOX = L"firefox.exe";
+const std::wstring CHROME = L"chrome.exe";
 
 std::wstring getForegroundExe()
 {
@@ -63,7 +65,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     {
         currExe = getForegroundExe();
         if(currExe == MINECRAFT) seconds_M++;
-        else if(currExe == BROWSER) seconds_B++;
+        else if(currExe == BRAVE || currExe == FIREFOX || currExe == CHROME) seconds_B++;
         InvalidateRect(hwnd, nullptr, TRUE); // triggers WM_PAINT event
         return 0;
     }
@@ -75,7 +77,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         SetBkMode(hdc, TRANSPARENT);
         
         DrawLine(hdc, 10, L"Minecraft", seconds_M, currExe == MINECRAFT);
-        DrawLine(hdc, 30, L"Homework", seconds_B, currExe == BROWSER);
+        DrawLine(hdc, 30, L"Homework", seconds_B, currExe == BRAVE || currExe == FIREFOX || currExe == CHROME);
 
         EndPaint(hwnd, &ps);
         return 0;
