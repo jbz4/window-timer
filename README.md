@@ -20,7 +20,7 @@ Tracking support for Minecraft + browser(s)
 # Future Plans
 
 Create support for multiple windows/processes  
-~~Idle detection~~ (Done)
+~~Idle detection~~ (Done) 
 Add notifications  
 
 # Tech Stack
