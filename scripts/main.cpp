@@ -64,8 +64,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_TIMER:
     {
         currExe = getForegroundExe();
-        if(currExe == MINECRAFT) seconds_M++;
-        else if(currExe == BRAVE || currExe == FIREFOX || currExe == CHROME) seconds_B++;
+        if(!_wcsicmp(currExe.c_str(), MINECRAFT.c_str())) seconds_M++;
+        else if(!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())) seconds_B++;
         InvalidateRect(hwnd, nullptr, TRUE); // triggers WM_PAINT event
         return 0;
     }
@@ -76,8 +76,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
         SetBkMode(hdc, TRANSPARENT);
         
-        DrawLine(hdc, 10, L"Minecraft", seconds_M, currExe == MINECRAFT);
-        DrawLine(hdc, 30, L"Homework", seconds_B, currExe == BRAVE || currExe == FIREFOX || currExe == CHROME);
+        DrawLine(hdc, 10, L"Minecraft", seconds_M, !_wcsicmp(currExe.c_str(), MINECRAFT.c_str()));
+        DrawLine(hdc, 30, L"Homework", seconds_B, !_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str()));
 
         EndPaint(hwnd, &ps);
         return 0;
