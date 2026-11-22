@@ -57,7 +57,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     switch (msg)
     {
     case WM_CREATE:
-        RegisterHotKey(hwnd, 1, MOD_CONTROL | MOD_ALT, 'Q'); // register hotkey to quit to be alt + q
+        RegisterHotKey(hwnd, 1, MOD_ALT, 'Q'); // register hotkey to quit to be alt + q
         SetTimer(hwnd, 1, 1000, nullptr);
         return 0;
 
