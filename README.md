@@ -34,17 +34,19 @@ Run the main.exe file in window-timer/scripts/
 
 # MVP Scope
 
--[x] Create an overlay
+- [x] Create an overlay
 
--[x] Show times for 2 windows
+- [x] Show times for 2 windows
 
--[x] Tracking support for Minecraft + browser(s)
+- [x] Tracking support for Minecraft + browser(s)
 
 # Future Plans
 
--[] Create support for multiple windows/processes  
--[x] Idle detection  
--[] Add notifications  
+- [ ] Create support for multiple windows/processes  
+
+- [x] Idle detection  
+
+- [ ] Add notifications  
 
 # DEMO
 
