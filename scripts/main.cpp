@@ -10,6 +10,8 @@ const std::wstring BRAVE = L"brave.exe";
 const std::wstring FIREFOX = L"firefox.exe";
 const std::wstring CHROME = L"chrome.exe";
 
+const DWORD IDLE_THRES_MS = 3 * 60 * 1000;
+
 std::wstring getForegroundExe()
 {
     HWND foreground = GetForegroundWindow();
@@ -38,6 +40,16 @@ std::wstring getForegroundExe()
 
     CloseHandle(process);
     return exe;
+}
+
+bool IsIdle()
+{
+    LASTINPUTINFO last = {};
+    last.cbSize = sizeof(last); // this tells windows which version of the LASTINPUTINFO struct we're using
+    if(!GetLastInputInfo(&last)) return false;
+
+    DWORD idleMs = GetTickCount() - last.dwTime;
+    return idleMs > IDLE_THRES_MS;
 }
 
 void DrawLine(HDC hdc, int y, const wchar_t* name, int secs, bool active)
