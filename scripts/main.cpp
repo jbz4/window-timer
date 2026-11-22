@@ -10,6 +10,8 @@ const std::wstring BRAVE = L"brave.exe";
 const std::wstring FIREFOX = L"firefox.exe";
 const std::wstring CHROME = L"chrome.exe";
 
+const DWORD IDLE_THRES_MS = 1 * 60 * 1000;
+
 std::wstring getForegroundExe()
 {
     HWND foreground = GetForegroundWindow();
@@ -40,6 +42,16 @@ std::wstring getForegroundExe()
     return exe;
 }
 
+bool IsIdle()
+{
+    LASTINPUTINFO last = {};
+    last.cbSize = sizeof(last); // this tells windows which version of the LASTINPUTINFO struct we're using
+    if(!GetLastInputInfo(&last)) return false;
+
+    DWORD idleMs = GetTickCount() - last.dwTime;
+    return idleMs > IDLE_THRES_MS;
+}
+
 void DrawLine(HDC hdc, int y, const wchar_t* name, int secs, bool active)
 {
     SetTextColor(hdc, active ? RGB(120, 255, 120) : RGB(255, 255, 255));
@@ -63,6 +75,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_TIMER:
     {
+        if(IsIdle()) return 0;
         currExe = getForegroundExe();
         if(!_wcsicmp(currExe.c_str(), MINECRAFT.c_str())) seconds_M++;
         else if(!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())) seconds_B++;
@@ -76,8 +89,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
         SetBkMode(hdc, TRANSPARENT);
         
-        DrawLine(hdc, 10, L"Minecraft", seconds_M, !_wcsicmp(currExe.c_str(), MINECRAFT.c_str()));
-        DrawLine(hdc, 30, L"Homework", seconds_B, !_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str()));
+        DrawLine(hdc, 10, L"Minecraft", seconds_M, !IsIdle() && !_wcsicmp(currExe.c_str(), MINECRAFT.c_str()));
+        DrawLine(hdc, 30, L"Homework", seconds_B, !IsIdle && (!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())));
 
         EndPaint(hwnd, &ps);
         return 0;
