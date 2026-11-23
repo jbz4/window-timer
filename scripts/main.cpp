@@ -90,7 +90,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         SetBkMode(hdc, TRANSPARENT);
         
         DrawLine(hdc, 10, L"Minecraft", seconds_M, !IsIdle() && !_wcsicmp(currExe.c_str(), MINECRAFT.c_str()));
-        DrawLine(hdc, 30, L"Homework", seconds_B, !IsIdle && (!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())));
+        DrawLine(hdc, 30, L"Homework", seconds_B, !IsIdle() && (!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())));
 
         EndPaint(hwnd, &ps);
         return 0;
