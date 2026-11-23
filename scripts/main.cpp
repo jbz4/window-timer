@@ -32,7 +32,7 @@ std::wstring getForegroundExe()
     {
         exe.assign(path, len);
  
-        // index of last slash
+        // index of last slash, index will be the of the second slash
         size_t slash = exe.find_last_of(L'\\');
 
         if (slash != std::wstring::npos) exe = exe.substr(slash + 1); // npos basically means null
@@ -58,7 +58,7 @@ void DrawLine(HDC hdc, int y, const wchar_t* name, int secs, bool active)
  
     TextOutW(hdc, 10, y, name, lstrlenW(name));
  
-    wchar_t time[16]; // buffer for the time text, I opted for this instead of wstring bc it is simpler and doesn't need extra import
+    wchar_t time[16]; // buffer for the time text, I opted for this instead of wstring bc it is simpler and more elegant
     wsprintfW(time, L"%02d:%02d:%02d", secs / 3600, (secs / 60) % 60, secs % 60); // converting seconds to hours:minutes:seconds like 00:00:00
  
     TextOutW(hdc, 200, y, time, lstrlenW(time));
@@ -77,7 +77,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     {
         if(IsIdle()) return 0;
         currExe = getForegroundExe();
-        if(!_wcsicmp(currExe.c_str(), MINECRAFT.c_str())) seconds_M++;
+        if(!_wcsicmp(currExe.c_str(), MINECRAFT.c_str())) seconds_M++; // _wcsicmp compares wstrings non case sensitive
         else if(!_wcsicmp(currExe.c_str(), BRAVE.c_str()) || !_wcsicmp(currExe.c_str(), FIREFOX.c_str()) || !_wcsicmp(currExe.c_str(), CHROME.c_str())) seconds_B++;
         InvalidateRect(hwnd, nullptr, TRUE); // triggers WM_PAINT event
         return 0;
@@ -128,7 +128,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE, PWSTR, int )
     ShowWindow(hwnd, SW_SHOWNOACTIVATE);
  
     MSG msg;
-    while (GetMessageW(&msg, nullptr, 0, 0))
+    while (GetMessageW(&msg, nullptr, 0, 0)) // getting events/messages
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
