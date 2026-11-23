@@ -28,7 +28,7 @@ Uses C++ with the Win32 API (windows.h)
 
 Clone the repo (git clone https://github.com/jbz4/window-timer)  
 
-Make sure you have your browser open (Chrome, Firefox, or Brave) and Minecraft open  
+Make sure you have your browser open (Chrome, Firefox, or Brave) and any version of Minecraft open  
 
 Run the main.exe file in window-timer/scripts/  
 
@@ -50,4 +50,4 @@ Run the main.exe file in window-timer/scripts/
 
 # DEMO
 
-TODO: put video link here
+[demo video link](https://drive.google.com/file/d/1UjVPt8DgWiyOSCRbMqslHgZvLS0iR_v5/view?usp=drive_link)
